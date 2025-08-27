@@ -207,8 +207,8 @@ CHAPA_SECRET_KEY = os.getenv("CHAPA_SECRET_KEY")
 CHAPA_API_BASE_URL = os.getenv("CHAPA_API_BASE_URL", "https://api.chapa.co/v1")
 
 # Celery Configuration
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672//'
+CELERY_RESULT_BACKEND = 'rpc://'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'

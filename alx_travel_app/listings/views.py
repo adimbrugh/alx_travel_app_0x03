@@ -4,7 +4,7 @@ from .payment_utilty import initiate_chapa_payment, CHAPA_VERIFY_URL
 from rest_framework import viewsets, permissions, status
 from .models import Listing, Booking, Review, Payment
 from rest_framework.response import Response
-from .tasks import send_booking_confirmation
+from .tasks import send_booking_confirmation_email
 from rest_framework.views import APIView
 from alx_travel_app import settings
 import requests
@@ -26,14 +26,11 @@ class BookingViewSet(viewsets.ModelViewSet):
     queryset = Booking.objects.all()
     serializer_class = BookingSerializer
     permission_classes = [permissions.IsAuthenticated]
-
+    
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user) # Save the booking with the current user
-        # Trigger confirmation email (Celery task)
-        send_booking_confirmation.delay(serializer.instance.id)
-        Booking = serializer.svave() # This line seems unnecessary and may cause an error
-        user_email = self.request.user.email
-        # You can pass user_email to the task if needed
+        booking = serializer.save()
+        user_email = booking.user.email
+        send_booking_confirmation_email.delay(user_email, booking.id)
 
 
 
