@@ -8,7 +8,7 @@ from .tasks import send_booking_confirmation_email
 from rest_framework.views import APIView
 from alx_travel_app import settings
 import requests
-import os
+
 
 
 
@@ -111,7 +111,8 @@ class VerifyPaymentView(APIView):
                     payment.save()
                     
                     # Trigger confirmation email (Celery task)
-                    send_booking_confirmation.delay(payment.booking.id)
+                    #send_booking_confirmation.delay(payment.booking.id)
+                    send_booking_confirmation_email.delay(payment.booking.user.email, payment.booking.id)   
                     
                     return Response({"status": "completed"})
                 else:
